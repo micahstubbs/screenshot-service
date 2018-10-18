@@ -15,7 +15,10 @@ exports.screenshot = async (req, res) => {
   })
   const page = await browser.newPage()
   await page.goto(url)
-  const imageBuffer = await page.screenshot()
+  const imageBuffer = await page.screenshot({
+    path: `vis.png`,
+    fullPage: true
+  })
   await browser.close()
 
   res.set('Content-Type', 'image/png')
