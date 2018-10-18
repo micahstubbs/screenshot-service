@@ -1,0 +1,9 @@
+{
+  "name": "screenshot-service",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/micahstubbs/screenshot-service.git",
+  "author": "Micah Stubbs <micah.stubbs@gmail.com>",
+  "license": "Apache-2.0",
+  "private": false
+}
