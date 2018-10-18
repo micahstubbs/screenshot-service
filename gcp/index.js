@@ -2,6 +2,7 @@ const puppeteer = require('puppeteer')
 
 exports.screenshot = async (req, res) => {
   const url = req.query.url
+  let path = req.query.path
 
   if (!url) {
     const anchorTag = `<a href="?url=https://example.com">?url=https://example.com</a>`
@@ -10,13 +11,17 @@ exports.screenshot = async (req, res) => {
     )
   }
 
+  if (!path) {
+    path = 'preview.png'
+  }
+
   const browser = await puppeteer.launch({
     args: ['--no-sandbox']
   })
   const page = await browser.newPage()
   await page.goto(url)
   const imageBuffer = await page.screenshot({
-    path: `vis.png`,
+    path,
     fullPage: true
   })
   await browser.close()
