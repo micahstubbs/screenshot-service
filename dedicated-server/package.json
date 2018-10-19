@@ -5,6 +5,7 @@
   "repository": "https://github.com/micahstubbs/screenshot-service",
   "main": "index.js",
   "dependencies": {
+    "filenamify": "^2.1.0",
     "puppeteer": "^0.13.0"
   },
   "devDependencies": {},
