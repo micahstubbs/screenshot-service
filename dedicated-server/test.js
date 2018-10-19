@@ -9,7 +9,10 @@ const filenamify = require('filenamify')
   // const url =
   //   'https://bl.ocks.org/micahstubbs/raw/3e931f7b5876254d7156a85cdd286f7b/'
 
-  const path = `${filenamify(url, { replacement: '-' }).replace('.', '-')}.png`
+  const path = `${filenamify(url, { replacement: '-' }).replace(
+    /\./g,
+    '-'
+  )}.png`
   const browser = await puppetteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   })
