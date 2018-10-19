@@ -1,5 +1,5 @@
 const puppetteer = require('puppeteer')
-;async () => {
+;(async () => {
   const url =
     'https://bl.ocks.org/micahstubbs/raw/66db7c01723983ff028584b6f304a54a/'
   const path = `crossfilter-block.png`
@@ -10,4 +10,4 @@ const puppetteer = require('puppeteer')
   await page.goto(url)
   await page.screenshot({ path })
   await browser.close()
-}
+})()
