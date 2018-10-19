@@ -17,10 +17,10 @@ const filenamify = require('filenamify')
 
   const oneMinute = 60000
   await page.goto(url, { waitUntil: 'networkidle0', timeout: oneMinute })
-  await page.waitForNavigation({
-    waitUntil: 'networkidle0',
-    timeout: oneMinute
-  })
+  // await page.waitForNavigation({
+  //   waitUntil: 'networkidle0',
+  //   timeout: oneMinute
+  // })
   await page.screenshot({ path, fullPage: true })
   await browser.close()
 })()
