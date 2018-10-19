@@ -7,8 +7,13 @@ const puppetteer = require('puppeteer')
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   })
   const page = await browser.newPage()
-  await page.goto(url, { waitUntil: 'networkidle0' })
-  await page.waitForNavigation({ waitUntil: 'networkidle0' })
+
+  const fiftyMinutes = 3000000
+  await page.goto(url, { waitUntil: 'networkidle0', timeout: fiftyMinutes })
+  await page.waitForNavigation({
+    waitUntil: 'networkidle0',
+    timeout: fiftyMinutes
+  })
   await page.screenshot({ path })
   await browser.close()
 })()
