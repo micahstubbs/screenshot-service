@@ -14,6 +14,6 @@ const puppetteer = require('puppeteer')
     waitUntil: 'networkidle0',
     timeout: fiftyMinutes
   })
-  await page.screenshot({ path })
+  await page.screenshot({ path, fullPage: true })
   await browser.close()
 })()
