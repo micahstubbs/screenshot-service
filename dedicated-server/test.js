@@ -2,8 +2,12 @@ const puppetteer = require('puppeteer')
 const filenamify = require('filenamify')
 ;(async () => {
   // crossfilter
+  // const url =
+  //   'https://bl.ocks.org/micahstubbs/raw/66db7c01723983ff028584b6f304a54a/'
+
+  // crossfilter filtered view
   const url =
-    'https://bl.ocks.org/micahstubbs/raw/66db7c01723983ff028584b6f304a54a/'
+    'https://bl.ocks.org/micahstubbs/raw/67d7aa147948d701e336f1f0589bf1e1/?date=Fri%2520Feb%252009%25202001%252000%253A00%253A00%2520GMT-0800%2520%28Pacific%2520Standard%2520Time%29--Tue%2520Feb%252020%25202001%252000%253A00%253A00%2520GMT-0800%2520%28Pacific%2520Standard%2520Time%29&distance%2520%28mi.%29=255--440&arrival%2520delay%2520%28min.%29=29--69&time%2520of%2520day=19.799999999999997--22.200000000000003'
 
   // svg line plot
   // const url =
