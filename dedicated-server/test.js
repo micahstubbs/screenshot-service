@@ -14,7 +14,7 @@ const filenamify = require('filenamify')
   //   'https://bl.ocks.org/micahstubbs/raw/3e931f7b5876254d7156a85cdd286f7b/'
 
   const path = `./screenshots/${filenamify(url, { replacement: '-' }).replace(
-    /\./g,
+    /[\.%=]/g,
     '-'
   )}.png`
   const browser = await puppetteer.launch({
