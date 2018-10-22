@@ -1,15 +1,16 @@
 upstream api_node_js {
-        server  127.0.0.1:8890
+        server  127.0.0.1:8890;
 }
 server {
         listen 9000 default_server;
         listen [::]:9000 default_server ipv6only=on;
+        server_name screenshot.micah.fyi
         root /home/ubuntu/www/index.html;
         index index.html;
         # make site accessible from http://localhost
-        server_name localhost;
+        # server_name localhost;
         location / {
-                # first attempt to serve request as a file, 
+                # first attempt to serve request as a file,
                 # then as a directory
                 # then fall back to displaying a 404
                 try_files $uri $uri/ =404;
