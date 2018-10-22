@@ -8,6 +8,7 @@ const bucket = storage.bucket('blockbuilder-screenshots')
 module.exports = props => {
   const { path, filename } = props
   const file = bucket.file(filename)
+  let publicUrl
 
   fs.createReadStream(path)
     .pipe(file.createWriteStream())
@@ -17,15 +18,12 @@ module.exports = props => {
     .on('finish', () => {
       // the public url can be used
       // to directly access the file via HTTP
-      const publicUrl = `https://storage.googleapis.com/${
-        bucket.name
-      }/${filename}`
+      publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
 
       // make the image public to the web
       // (since we want people to be able to download it)
       file.makePublic().then(() => {
         console.log(`success! image uploaded to\n ${publicUrl}`)
-        return publicUrl
       })
     })
 }
