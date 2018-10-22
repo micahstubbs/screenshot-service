@@ -2,6 +2,7 @@ const util = require('util')
 const fs = require('fs')
 const express = require('express')
 const screenshot = require('./screenshot.js')
+const cache = require('./cache.js')
 
 const app = express()
 const port = 8890
@@ -22,6 +23,9 @@ app.get('/png', async (req, res) => {
 
   const readFile = util.promisify(fs.readFile)
   const file = await readFile(path)
+
+  // cache the file
+  cache({ path, filename })
 
   const stat = util.promisify(fs.stat)
   const { size } = await stat(path)
