@@ -10,7 +10,7 @@ app.listen(port, () => {
   console.log(`screenshot-bot listening on port ${port}`)
 })
 
-app.get('/', async (req, res) => {
+app.get('/png', async (req, res) => {
   console.log(JSON.stringify(req.query, null, 2))
   let url = ''
   if (req && req.query) url = req.query.url
