@@ -1,6 +1,6 @@
 const util = require('util')
 const fs = require('fs')
-const storage = require('@google-cloud/storage')
+const { Storage } = require('@google-cloud/storage')
 const path = require('path')
 
 module.exports = async props => {
@@ -15,7 +15,7 @@ module.exports = async props => {
   // note: we don't need to specify a key file
   // since we're running this on a gcp vm
   // that can use default application credentials
-  const googleCloudStorage = storage({
+  const googleCloudStorage = new Storage({
     projectId: process.env.GCLOUD_STORAGE_BUCKET
   })
 
