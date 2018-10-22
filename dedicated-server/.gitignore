@@ -1,0 +1,5 @@
+# ignore cached image data
+screenshots
+
+# ignore OS files
+.DS_Store
