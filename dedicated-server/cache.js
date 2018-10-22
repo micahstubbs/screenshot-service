@@ -24,6 +24,7 @@ module.exports = async props => {
       // (since we want people to be able to download it)
       blob.makePublic().then(() => {
         console.log(`success! image uploaded to\n ${publicUrl}`)
+        return publicUrl
       })
     })
 }
