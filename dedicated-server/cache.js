@@ -1,12 +1,13 @@
 const fs = require('fs')
-const storage = require('@google-cloud/storage')()
-
-const bucket = storage.bucket('blockbuilder-screenshots')
+const { Storage } = require('@google-cloud/storage')
 
 // based on
-// https://cloud.google.com/nodejs/docs/reference/storage/1.5.x/File#createWriteStream
-module.exports = props => {
+// https://cloud.google.com/nodejs/docs/reference/storage/2.0.x/File.html#createWriteStream
+const cache = async props => {
   const { path, filename } = props
+
+  const storage = new Storage()
+  const bucket = storage.bucket('blockbuilder-screenshots')
   const file = bucket.file(filename)
   let publicUrl
 
@@ -27,3 +28,5 @@ module.exports = props => {
       })
     })
 }
+
+module.exports = cache
