@@ -15,14 +15,16 @@ module.exports = async props => {
   // note: we don't need to specify a key file
   // since we're running this on a gcp vm
   // that can use default application credentials
-  const googleCloudStorage = new Storage({
-    projectId: process.env.GCLOUD_STORAGE_BUCKET
-  })
+  const googleCloudStorage = new Storage()
 
   const readFile = util.promisify(fs.readFile)
   const file = await readFile(path)
 
   // A bucket is a container for objects (files)
+  console.log(
+    'process.env.GCLOUD_STORAGE_BUCKET',
+    process.env.GCLOUD_STORAGE_BUCKET
+  )
   const bucket = googleCloudStorage.bucket(process.env.GCLOUD_STORAGE_BUCKET)
 
   // Create a new blob in the bucket and upload the file data
