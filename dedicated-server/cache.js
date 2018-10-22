@@ -21,11 +21,7 @@ module.exports = async props => {
   const file = await readFile(path)
 
   // A bucket is a container for objects (files)
-  console.log(
-    'process.env.GCLOUD_STORAGE_BUCKET',
-    process.env.GCLOUD_STORAGE_BUCKET
-  )
-  const bucket = googleCloudStorage.bucket(process.env.GCLOUD_STORAGE_BUCKET)
+  const bucket = googleCloudStorage.bucket('blockbuilder-screenshots')
 
   // Create a new blob in the bucket and upload the file data
   const blob = bucket.file(file)
