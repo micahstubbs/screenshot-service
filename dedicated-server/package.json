@@ -5,12 +5,14 @@
   "repository": "https://github.com/micahstubbs/screenshot-service",
   "main": "index.js",
   "dependencies": {
+    "express": "^4.16.4",
     "filenamify": "^2.1.0",
     "puppeteer": "^0.13.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js",
+    "start": "node server.js"
   },
   "author": "",
   "license": "Apache-2.0"
