@@ -23,7 +23,7 @@ module.exports = props => {
 
       // make the image public to the web
       // (since we want people to be able to download it)
-      blob.makePublic().then(() => {
+      file.makePublic().then(() => {
         console.log(`success! image uploaded to\n ${publicUrl}`)
         return publicUrl
       })
