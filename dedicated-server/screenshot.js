@@ -11,10 +11,11 @@ module.exports = async url => {
   console.log('url after checking protocol', url)
 
   const pathDir = './screenshots'
-  const path = `${pathDir}/${filenamify(url, { replacement: '-' }).replace(
+  const filename = `${filenamify(url, { replacement: '-' }).replace(
     /[\.%=]/g,
     '-'
   )}.png`
+  const path = `${pathDir}/${filename}`
 
   // if the path does not exist, create it
   const access = util.promisify(fs.access)
@@ -44,9 +45,10 @@ module.exports = async url => {
   const oneMinute = 60000
   await page.goto(url, { waitUntil: 'networkidle0', timeout: oneMinute })
   await page.screenshot({ path, fullPage: true })
+  console.log(`screenshot of ${url} taken and stored at ${path}`)
   await browser.close()
 
   // return the location of the screenshot
   // on the local filesystem
-  return path
+  return { path, filename }
 }
