@@ -4,11 +4,21 @@ const storage = require('@google-cloud/storage')
 const path = require('path')
 
 module.exports = async props => {
-  const { path, filename } = props
+  const { path, filename } = prop
 
   //
   // write to bucket
   //
+
+  // Instantiate a storage client
+  //
+  // note: we don't need to specify a key file
+  // since we're running this on a gcp vm
+  // that can use default application credentials
+  const googleCloudStorage = storage({
+    projectId: process.env.GCLOUD_STORAGE_BUCKET
+  })
+
   const readFile = util.promisify(fs.readFile)
   const file = await readFile(path)
 
