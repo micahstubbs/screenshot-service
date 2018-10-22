@@ -4,7 +4,7 @@ const storage = require('@google-cloud/storage')
 const path = require('path')
 
 module.exports = async props => {
-  const { path, filename } = prop
+  const { path, filename } = props
 
   //
   // write to bucket
