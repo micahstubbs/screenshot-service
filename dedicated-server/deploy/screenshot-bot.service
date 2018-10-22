@@ -1,9 +1,3 @@
- # /etc/systemd/system/screenshot-bot.service
- #
- # place this file in /etc/systemd/system/
- # 
- # sudo cp screenshot-bot.service /etc/systemd/system/screenshot-bot.service
- #
 [Unit]
 Description=screenshot-bot
 
