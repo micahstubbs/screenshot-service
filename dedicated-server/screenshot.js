@@ -10,7 +10,7 @@ module.exports = async url => {
   if (!/http?s:\/\//.test(url)) url = `http://${url}`
   console.log('url after checking protocol', url)
 
-  const pathDir = './screenshots'
+  const pathDir = `${__dirname}/screenshots`
   const filename = `${filenamify(url, { replacement: '-' }).replace(
     /[\.%=]/g,
     '-'
