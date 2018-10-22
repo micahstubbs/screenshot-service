@@ -1,3 +1,4 @@
+const util = require('util')
 const fs = require('fs')
 const puppetteer = require('puppeteer')
 const filenamify = require('filenamify')
@@ -14,16 +15,38 @@ module.exports = async url => {
     /[\.%=]/g,
     '-'
   )}.png`
-  if (!fs.existsSync(pathDir)) fs.mkdirSync(pathDir)
 
+  // if the path does not exist, create it
+  const access = util.promisify(fs.access)
+  const mkdir = util.promisify(fs.mkdir)
+  try {
+    let pathExists = await access(pathDir)
+  } catch (err) {
+    console.log(`${pathDir} does not exist yet`)
+    try {
+      await mkdir(pathDir)
+      console.log(`created ${pathDir}`)
+    } catch (err) {
+      console.log(`error creating ${pathDir}`)
+      console.log(err)
+    }
+  }
+
+  // launch the headless browser
   const browser = await puppetteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   })
+
+  // load the page
   const page = await browser.newPage()
 
+  // screenshot the page
   const oneMinute = 60000
   await page.goto(url, { waitUntil: 'networkidle0', timeout: oneMinute })
   await page.screenshot({ path, fullPage: true })
   await browser.close()
+
+  // return the location of the screenshot
+  // on the local filesystem
   return path
 }
