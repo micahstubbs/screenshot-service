@@ -6,6 +6,9 @@ const path = require('path')
 module.exports = async props => {
   const { path, filename } = props
 
+  // create a read stream
+  const src = fs.createReadStream(path)
+
   //
   // write to bucket
   //
@@ -24,8 +27,9 @@ module.exports = async props => {
   const bucket = googleCloudStorage.bucket('blockbuilder-screenshots')
 
   // Create a new blob in the bucket and upload the file data
-  const blob = bucket.file(file)
+  const blob = bucket.file(filename)
   const blobStream = blob.createWriteStream()
+  src.pipe(blobStream)
 
   blobStream.on('error', err => {
     next(err)
