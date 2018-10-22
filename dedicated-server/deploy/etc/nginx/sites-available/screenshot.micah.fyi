@@ -5,7 +5,7 @@ server {
         listen 9000 default_server;
         listen [::]:9000 default_server ipv6only=on;
         server_name screenshot.micah.fyi
-        root /home/ubuntu/www/index.html;
+        root /home/ubuntu/www;
         index index.html;
         # make site accessible from http://localhost
         # server_name localhost;
