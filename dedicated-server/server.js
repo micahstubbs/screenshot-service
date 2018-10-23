@@ -23,7 +23,6 @@ app.get('/png', async (req, res) => {
   const ext = 'png'
   const filename = getFilename({ url, ext })
 
-  res.setHeader('Content-Length', size)
   res.setHeader('Content-Type', 'image/png')
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
 
@@ -34,6 +33,7 @@ app.get('/png', async (req, res) => {
     const storage = new Storage()
     const bucket = storage.bucket('blockbuilder-screenshots')
     const remoteFile = bucket.file(filename)
+    let size = 0
     remoteFile
       .createReadStream()
       .on('error', err => console.log(err))
@@ -41,8 +41,12 @@ app.get('/png', async (req, res) => {
         // Server connected and responded
         // with the specified status and headers
       })
+      .on('data', chunk => {
+        size += chunk.length
+      })
       .on('end', () => {
         // the file is fully downloaded
+        res.setHeader('Content-Length', size)
       })
       .pipe(res)
   } else {
@@ -60,6 +64,7 @@ app.get('/png', async (req, res) => {
     const { size } = await stat(path)
 
     // serve the response from the local filesystem
+    res.setHeader('Content-Length', size)
     res.write(file, 'binary')
     res.end()
   }
