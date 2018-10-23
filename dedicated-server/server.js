@@ -30,8 +30,9 @@ app.get('/png', async (req, res) => {
   const screenshotInCache = await checkCache(filename)
   if (screenshotInCache) {
     // serve screenshot from the gcp bucket cache
+    const bucketName = 'blockbuilder-screenshots'
     const storage = new Storage()
-    const bucket = storage.bucket('blockbuilder-screenshots')
+    const bucket = storage.bucket(bucketName)
     const remoteFile = bucket.file(filename)
     console.log(`now fetching ${filename} from gcp bucket ${bucketName}`)
 
