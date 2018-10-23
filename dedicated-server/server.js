@@ -3,6 +3,7 @@ const fs = require('fs')
 const express = require('express')
 const screenshot = require('./screenshot.js')
 const cache = require('./cache.js')
+const getFilename = require('./util/get-filename.js')
 
 const app = express()
 const port = 8890
@@ -17,8 +18,13 @@ app.get('/png', async (req, res) => {
   if (req && req.query) url = req.query.url
   console.log('req.query from /', req.query)
 
+  const ext = 'png'
+  const filename = getFilename({ url, ext })
+
+  // check if url is already in cache
+
   // an object with path, filename properties
-  const { path, filename } = await screenshot(url)
+  const { path } = await screenshot({ url, filename })
   console.log(JSON.stringify(screenshot, null, 2))
 
   const readFile = util.promisify(fs.readFile)

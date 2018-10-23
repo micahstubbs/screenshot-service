@@ -1,9 +1,8 @@
 const util = require('util')
 const fs = require('fs')
 const puppetteer = require('puppeteer')
-const filenamify = require('filenamify')
 
-module.exports = async url => {
+module.exports = async ({ url, filename }) => {
   console.log('url from screenshot.js', url)
 
   // if url does not have http?s://, prepend it
@@ -11,10 +10,6 @@ module.exports = async url => {
   console.log('url after checking protocol', url)
 
   const pathDir = `${__dirname}/screenshots`
-  const filename = `${filenamify(url, { replacement: '-' }).replace(
-    /[\.%=]/g,
-    '-'
-  )}.png`
   const path = `${pathDir}/${filename}`
 
   // if the path does not exist, create it
@@ -50,5 +45,5 @@ module.exports = async url => {
 
   // return the location of the screenshot
   // on the local filesystem
-  return { path, filename }
+  return { path }
 }
