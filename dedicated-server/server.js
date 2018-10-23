@@ -33,6 +33,8 @@ app.get('/png', async (req, res) => {
     const storage = new Storage()
     const bucket = storage.bucket('blockbuilder-screenshots')
     const remoteFile = bucket.file(filename)
+    console.log(`now fetching ${filename} from gcp bucket ${bucketName}`)
+
     let size = 0
     remoteFile
       .createReadStream()
@@ -43,10 +45,10 @@ app.get('/png', async (req, res) => {
       })
       .on('data', chunk => {
         size += chunk.length
+        console.log(size)
       })
       .on('end', () => {
         // the file is fully downloaded
-        res.setHeader('Content-Length', size)
       })
       .pipe(res)
   } else {
