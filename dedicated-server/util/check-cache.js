@@ -1,8 +1,9 @@
 const { Storage } = require('@google-cloud/storage')
 
 module.exports = filename => {
-  const storage = new Storage()
+  const projectId = 'blockbuilder-search'
   const bucketName = 'blockbuilder-screenshots'
+  const storage = new Storage({ projectId })
 
   // Lists files in the bucket
   storage
