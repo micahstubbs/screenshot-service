@@ -46,7 +46,7 @@ app.get('/png', async (req, res) => {
       })
       .on('data', chunk => {
         size += chunk.length
-        console.log(size)
+        // console.log(size)
       })
       .on('end', () => {
         // the file is fully downloaded
