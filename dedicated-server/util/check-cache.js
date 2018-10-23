@@ -8,5 +8,6 @@ module.exports = async filename => {
   const results = await storage.bucket(bucketName).getFiles()
 
   const files = results[0]
-  return files.includes(filename)
+  // return files.includes(filename)
+  return files
 }
