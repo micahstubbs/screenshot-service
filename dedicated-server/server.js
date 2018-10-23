@@ -3,7 +3,9 @@ const fs = require('fs')
 const express = require('express')
 const screenshot = require('./screenshot.js')
 const cache = require('./cache.js')
+const checkCache = require('./util/check-cache.js')
 const getFilename = require('./util/get-filename.js')
+const { Storage } = require('@google-cloud/storage')
 
 const app = express()
 const port = 8890
@@ -21,24 +23,44 @@ app.get('/png', async (req, res) => {
   const ext = 'png'
   const filename = getFilename({ url, ext })
 
-  // check if url is already in cache
-
-  // an object with path, filename properties
-  const { path } = await screenshot({ url, filename })
-  console.log(JSON.stringify(screenshot, null, 2))
-
-  const readFile = util.promisify(fs.readFile)
-  const file = await readFile(path)
-
-  // cache the file
-  cache({ path, filename })
-
-  const stat = util.promisify(fs.stat)
-  const { size } = await stat(path)
-
   res.setHeader('Content-Length', size)
   res.setHeader('Content-Type', 'image/png')
   res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
-  res.write(file, 'binary')
-  res.end()
+
+  // check if url is already in cache
+  const screenshotInCache = await checkCache(filename)
+  if (screenshotInCache) {
+    // serve screenshot from the gcp bucket cache
+    const storage = new Storage()
+    const bucket = storage.bucket('blockbuilder-screenshots')
+    const remoteFile = bucket.file(filename)
+    remoteFile
+      .createReadStream()
+      .on('error', err => console.log(err))
+      .on('response', response => {
+        // Server connected and responded
+        // with the specified status and headers
+      })
+      .on('end', () => {
+        // the file is fully downloaded
+      })
+      .pipe(res)
+  } else {
+    // render screenshot
+    const { path } = await screenshot({ url, filename })
+    console.log(JSON.stringify(screenshot, null, 2))
+
+    const readFile = util.promisify(fs.readFile)
+    const file = await readFile(path)
+
+    // cache the screenshot file
+    cache({ path, filename })
+
+    const stat = util.promisify(fs.stat)
+    const { size } = await stat(path)
+
+    // serve the response from the local filesystem
+    res.write(file, 'binary')
+    res.end()
+  }
 })
