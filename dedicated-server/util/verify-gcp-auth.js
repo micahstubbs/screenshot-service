@@ -1,3 +1,10 @@
+// verify local gcp auth setttings
+// by listing all buckets in the current active gcp project
+// you may need to go configure IAM permissions for your service account
+// to get this to work
+//
+// https://console.cloud.google.com/iam-admin/iam
+
 // Imports the Google Cloud client library.
 const { Storage } = require('@google-cloud/storage')
 
