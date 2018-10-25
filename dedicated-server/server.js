@@ -78,6 +78,7 @@ app.get('/png', async (req, res) => {
       }
     }
   } else {
-    res.send(401)
+    res.status(401).send('uh oh, this request is missing an api key')
+    res.end()
   }
 })
