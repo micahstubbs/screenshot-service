@@ -1,0 +1,9 @@
+# cached image data
+screenshots
+
+# OS files
+.DS_Store
+
+# API key store
+keys.js
+gen-key.js
