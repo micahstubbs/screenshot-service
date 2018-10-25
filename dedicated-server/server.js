@@ -76,9 +76,12 @@ app.get('/png', async (req, res) => {
         res.write(file, 'binary')
         res.end()
       }
+    } else {
+      res.status(401).send('uh oh, this request is missing an api key')
+      res.end()
     }
   } else {
-    res.status(401).send('uh oh, this request is missing an api key')
+    res.status(400).send('oh no , this request is missing an query string')
     res.end()
   }
 })
