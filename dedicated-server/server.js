@@ -21,6 +21,7 @@ app.get('/png', async (req, res) => {
   let key = ''
   if (req && req.query) {
     url = req.query.url
+    key = req.query.id
     // check if request uses a known API key
     if (keys[key]) {
       console.log('req.query from /', req.query)
