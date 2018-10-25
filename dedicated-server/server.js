@@ -15,22 +15,29 @@ app.listen(port, () => {
   console.log(`screenshot-bot listening on port ${port}`)
 })
 
-app.get('/png', async (req, res) => {
+app.get('/', async (req, res) => {
   console.log(JSON.stringify(req.query, null, 2))
-  console.log('keys from keystore', keys)
+  // console.log('keys from keystore', keys)
   let url = ''
   let key = ''
+  let ext = 'png' // default to png
   if (req && req.query) {
     url = req.query.url
     key = req.query.id
+    if (req.query.ext) ext = req.query.ext
     // check if request uses a known API key
     if (keys[key]) {
       console.log('req.query from /', req.query)
 
-      const ext = 'png'
       const filename = getFilename({ url, ext })
 
-      res.setHeader('Content-Type', 'image/png')
+      const contentTypeHash = {
+        png: 'image/png',
+        pdf: 'application/pdf'
+      }
+      const contentType = contentTypeHash[ext]
+
+      res.setHeader('Content-Type', contentType)
       res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
 
       // check if url is already in cache
@@ -61,8 +68,8 @@ app.get('/png', async (req, res) => {
           .pipe(res)
       } else {
         // render screenshot
-        const { path } = await screenshot({ url, filename })
-        console.log(JSON.stringify(screenshot, null, 2))
+        const { path } = await screenshot({ url, filename, ext })
+        // console.log(JSON.stringify(screenshot, null, 2))
 
         const readFile = util.promisify(fs.readFile)
         const file = await readFile(path)
