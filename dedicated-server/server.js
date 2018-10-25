@@ -17,7 +17,7 @@ app.listen(port, () => {
 
 app.get('/', async (req, res) => {
   console.log(JSON.stringify(req.query, null, 2))
-  console.log('keys from keystore', keys)
+  // console.log('keys from keystore', keys)
   let url = ''
   let key = ''
   let ext = 'png' // default to png
