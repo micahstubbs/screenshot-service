@@ -17,6 +17,7 @@ app.listen(port, () => {
 
 app.get('/png', async (req, res) => {
   console.log(JSON.stringify(req.query, null, 2))
+  console.log('keys from keystore', keys)
   let url = ''
   let key = ''
   if (req && req.query) {
