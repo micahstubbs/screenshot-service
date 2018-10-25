@@ -1,5 +1,9 @@
-# ignore cached image data
+# cached image data
 screenshots
 
-# ignore OS files
+# OS files
 .DS_Store
+
+# API key store
+keys.js
+gen-key.js
