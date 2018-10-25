@@ -133,4 +133,3 @@ server {
         server_name screenshot.micah.fyi;
     return 404; # managed by Certbot
 }
-      
