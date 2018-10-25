@@ -68,8 +68,8 @@ app.get('/', async (req, res) => {
           .pipe(res)
       } else {
         // render screenshot
-        const { path } = await screenshot({ url, filename })
-        console.log(JSON.stringify(screenshot, null, 2))
+        const { path } = await screenshot({ url, filename, ext })
+        // console.log(JSON.stringify(screenshot, null, 2))
 
         const readFile = util.promisify(fs.readFile)
         const file = await readFile(path)
