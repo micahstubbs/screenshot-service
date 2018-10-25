@@ -41,7 +41,7 @@ module.exports = async ({ url, filename, ext }) => {
   await page.goto(url, { waitUntil: 'networkidle0', timeout: oneMinute })
   if (ext === 'png') await page.screenshot({ path, fullPage: true })
   if (ext === 'pdf') await page.pdf({ path, format: 'letter', landscape: true })
-  console.log(`screenshot image stored at ${path}`)
+  console.log(`screenshot stored at ${path}`)
   await browser.close()
 
   // return the location of the screenshot
