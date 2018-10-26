@@ -21,15 +21,19 @@ app.get('/', async (req, res) => {
   let url = ''
   let key = ''
   let ext = 'png' // default to png
+  let filename
   if (req && req.query) {
     url = req.query.url
     key = req.query.id
     if (req.query.ext) ext = req.query.ext
+    if (req.query.filename) filename = `${req.query.filename}.${ext}`
     // check if request uses a known API key
     if (keys[key]) {
       console.log('req.query from /', req.query)
 
-      const filename = getFilename({ url, ext })
+      // if the caller does not specify a filename
+      // generate one from the provided url and file extension
+      if (!filename) filename = getFilename({ url, ext })
 
       const contentTypeHash = {
         png: 'image/png',
