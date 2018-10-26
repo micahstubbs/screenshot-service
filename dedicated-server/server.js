@@ -25,8 +25,8 @@ app.get('/', async (req, res) => {
   if (req && req.query) {
     url = req.query.url
     key = req.query.id
-    filename = req.query.filename
     if (req.query.ext) ext = req.query.ext
+    if (req.query.filename) filename = `${req.query.filename}.${ext}`
     // check if request uses a known API key
     if (keys[key]) {
       console.log('req.query from /', req.query)
