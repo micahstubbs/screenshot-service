@@ -22,11 +22,14 @@ app.get('/', async (req, res) => {
   let key = ''
   let ext = 'png' // default to png
   let filename
+  let pageRanges = ''
   if (req && req.query) {
     url = req.query.url
     key = req.query.id
     if (req.query.ext) ext = req.query.ext
     if (req.query.filename) filename = `${req.query.filename}.${ext}`
+    if (req.query.ext === 'pdf' && req.query.pageRanges)
+      pageRanges = req.query.pageRanges
     // check if request uses a known API key
     if (keys[key]) {
       console.log('req.query from /', req.query)
@@ -72,7 +75,7 @@ app.get('/', async (req, res) => {
           .pipe(res)
       } else {
         // render screenshot
-        const { path } = await screenshot({ url, filename, ext })
+        const { path } = await screenshot({ url, filename, ext, pageRanges })
         // console.log(JSON.stringify(screenshot, null, 2))
 
         const readFile = util.promisify(fs.readFile)
