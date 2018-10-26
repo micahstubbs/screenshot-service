@@ -40,8 +40,11 @@ module.exports = async ({ url, filename, ext, pageRanges }) => {
   const oneMinute = 60000
   await page.goto(url, { waitUntil: 'networkidle0', timeout: oneMinute })
   if (ext === 'png') await page.screenshot({ path, fullPage: true })
-  if (ext === 'pdf')
+  if (ext === 'pdf') {
+    console.log('pageRanges', pageRanges)
     await page.pdf({ path, format: 'letter', landscape: true, pageRanges })
+  }
+
   console.log(`screenshot stored at ${path}`)
   await browser.close()
 
