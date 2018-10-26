@@ -2,7 +2,7 @@ const util = require('util')
 const fs = require('fs')
 const puppetteer = require('puppeteer')
 
-module.exports = async ({ url, filename, ext }) => {
+module.exports = async ({ url, filename, ext, pageRanges }) => {
   console.log('url from screenshot.js', url)
 
   // if url does not have http?s://, prepend it
@@ -40,7 +40,11 @@ module.exports = async ({ url, filename, ext }) => {
   const oneMinute = 60000
   await page.goto(url, { waitUntil: 'networkidle0', timeout: oneMinute })
   if (ext === 'png') await page.screenshot({ path, fullPage: true })
-  if (ext === 'pdf') await page.pdf({ path, format: 'letter', landscape: true })
+  if (ext === 'pdf') {
+    console.log('pageRanges', pageRanges)
+    await page.pdf({ path, format: 'letter', landscape: true, pageRanges })
+  }
+
   console.log(`screenshot stored at ${path}`)
   await browser.close()
 
