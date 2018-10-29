@@ -14,10 +14,17 @@ const cache = async props => {
   // to directly access the file via HTTP
   publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
 
+  console.log('buffer.length', buffer.length)
+  console.log('path.length', path.length)
+
   let readStreamSource
-  if (buffer) readStreamSource = buffer
-  else if (path) readStreamSource = path
-  else console.log(`error: no file path or buffer provided`)
+  if (buffer) {
+    console.log('readStreamSource = buffer')
+    readStreamSource = buffer
+  } else if (path) {
+    console.log('readStreamSource = path')
+    readStreamSource = path
+  } else console.log(`error: no file path or buffer provided`)
 
   if (readStreamSource) {
     fs.createReadStream(readStreamSource)
