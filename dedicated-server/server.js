@@ -23,9 +23,22 @@ app.get('/', async (req, res) => {
   let ext = 'png' // default to png
   let filename
   let pageRanges = ''
+  let viewport
+  let resize
+  let reply
+
   if (req && req.query) {
     url = req.query.url
     key = req.query.id
+    viewport = {
+      height: req.query.vheight,
+      width: req.query.vwidth
+    }
+    resize = {
+      height: req.query.rheight,
+      width: req.query.rwidth
+    }
+    reply = req.query.reply
     if (req.query.ext) ext = req.query.ext
     if (req.query.filename) filename = `${req.query.filename}.${ext}`
     if (req.query.ext === 'pdf' && req.query.pageRanges)
@@ -75,14 +88,26 @@ app.get('/', async (req, res) => {
           .pipe(res)
       } else {
         // render screenshot
-        let buffer = await screenshot({ url, filename, ext, pageRanges })
+        let buffer = await screenshot({
+          url,
+          filename,
+          ext,
+          pageRanges,
+          viewport,
+          resize
+        })
 
         // cache the screenshot file
         cache({ buffer, filename })
 
         const size = buffer.length
         res.setHeader('Content-Length', size)
-        res.write(buffer, 'binary')
+
+        // this is a hack, should really handle POST requests
+        // for when I want to screenshot and cache
+        // without replying to the client
+        // TODO: properly handle POST requests
+        if (reply !== 'no') res.write(buffer, 'binary')
         res.end()
       }
     } else {
