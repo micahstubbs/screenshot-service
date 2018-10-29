@@ -15,8 +15,8 @@ const cache = async props => {
   publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
 
   let readStreamSource
-  if (path) readStreamSource = path
-  else if (buffer) readStreamSource = buffer
+  if (buffer) readStreamSource = buffer
+  else if (path) readStreamSource = path
   else console.log(`error: no file path or buffer provided`)
 
   if (readStreamSource) {
