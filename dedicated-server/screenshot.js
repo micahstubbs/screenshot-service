@@ -1,6 +1,6 @@
 const util = require('util')
 const fs = require('fs')
-const puppetteer = require('puppeteer')
+const puppeteer = require('puppeteer')
 
 module.exports = async ({ url, filename, ext, pageRanges }) => {
   console.log('url from screenshot.js', url)
@@ -29,7 +29,7 @@ module.exports = async ({ url, filename, ext, pageRanges }) => {
   }
 
   // launch the headless browser
-  const browser = await puppetteer.launch({
+  const browser = await puppeteer.launch({
     args: ['--no-sandbox', '--disable-setuid-sandbox']
   })
 
