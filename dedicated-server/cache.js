@@ -1,4 +1,5 @@
 const fs = require('fs')
+const stream = require('stream')
 const { Storage } = require('@google-cloud/storage')
 
 // based on
@@ -14,19 +15,18 @@ const cache = async props => {
   // to directly access the file via HTTP
   publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
 
-  let readStreamSource
+  let readStream
   if (buffer) {
-    console.log('readStreamSource = buffer')
     console.log('buffer.length', buffer.length)
-    readStreamSource = buffer
+    const readStreamSource = new stream.passThrough()
+    readStream = readStreamSource.end(buffer)
   } else if (path) {
-    console.log('readStreamSource = path')
     console.log('path.length', path.length)
-    readStreamSource = path
+    readStream = fs.createReadStream(readStreamSource)
   } else console.log(`error: no file path or buffer provided`)
 
-  if (readStreamSource) {
-    fs.createReadStream(readStreamSource)
+  if (readStream) {
+    readStream
       .pipe(file.createWriteStream())
       .on('error', err => {
         console.log(err)
