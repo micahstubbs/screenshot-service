@@ -18,27 +18,33 @@ const cache = async props => {
   let readStream
   if (buffer) {
     console.log('buffer.length', buffer.length)
-    const readStreamSource = new stream.PassThrough()
-    readStream = readStreamSource.end(buffer)
+
+    // use gcloud's file.save API
+    // to directly upload a buffer
+    // https://github.com/googleapis/google-cloud-node/pull/1233
+    file.save(buffer, function(err) {
+      if (err) console.log(err)
+      else {
+        file.makePublic().then(() => {
+          console.log(`success! image uploaded to\n ${publicUrl}`)
+        })
+      }
+    })
   } else if (path) {
     console.log('path.length', path.length)
-    readStream = fs.createReadStream(readStreamSource)
-  } else console.log(`error: no file path or buffer provided`)
-
-  // if (readStream) {
-  readStream
-    .pipe(file.createWriteStream())
-    .on('error', err => {
-      console.log(err)
-    })
-    .on('finish', () => {
-      // make the image public to the web
-      // (since we want people to be able to download it)
-      file.makePublic().then(() => {
-        console.log(`success! image uploaded to\n ${publicUrl}`)
+    fs.createReadStream(readStreamSource)
+      .pipe(file.createWriteStream())
+      .on('error', err => {
+        console.log(err)
       })
-    })
-  // }
+      .on('finish', () => {
+        // make the image public to the web
+        // (since we want people to be able to download it)
+        file.makePublic().then(() => {
+          console.log(`success! image uploaded to\n ${publicUrl}`)
+        })
+      })
+  } else console.log(`error: no file path or buffer provided`)
 }
 
 module.exports = cache
