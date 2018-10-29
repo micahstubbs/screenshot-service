@@ -31,12 +31,12 @@ app.get('/', async (req, res) => {
     url = req.query.url
     key = req.query.id
     viewport = {
-      height: req.query.vheight,
-      width: req.query.vwidth
+      height: Number(req.query.vheight),
+      width: Number(req.query.vwidth)
     }
     resize = {
-      height: req.query.rheight,
-      width: req.query.rwidth
+      height: Number(req.query.rheight),
+      width: Number(req.query.rwidth)
     }
     reply = req.query.reply
     if (req.query.ext) ext = req.query.ext
