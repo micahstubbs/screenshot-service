@@ -75,19 +75,12 @@ app.get('/', async (req, res) => {
           .pipe(res)
       } else {
         // render screenshot
-        const { path } = await screenshot({ url, filename, ext, pageRanges })
-        // console.log(JSON.stringify(screenshot, null, 2))
-
-        const readFile = util.promisify(fs.readFile)
-        const file = await readFile(path)
+        let buffer = await screenshot({ url, filename, ext, pageRanges })
 
         // cache the screenshot file
-        cache({ path, filename })
+        cache({ buffer, filename })
 
-        const stat = util.promisify(fs.stat)
-        const { size } = await stat(path)
-
-        // serve the response from the local filesystem
+        const size = buffer.length
         res.setHeader('Content-Length', size)
         res.write(file, 'binary')
         res.end()
