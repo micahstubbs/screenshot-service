@@ -25,20 +25,20 @@ const cache = async props => {
     readStream = fs.createReadStream(readStreamSource)
   } else console.log(`error: no file path or buffer provided`)
 
-  if (readStream) {
-    readStream
-      .pipe(file.createWriteStream())
-      .on('error', err => {
-        console.log(err)
+  // if (readStream) {
+  readStream
+    .pipe(file.createWriteStream())
+    .on('error', err => {
+      console.log(err)
+    })
+    .on('finish', () => {
+      // make the image public to the web
+      // (since we want people to be able to download it)
+      file.makePublic().then(() => {
+        console.log(`success! image uploaded to\n ${publicUrl}`)
       })
-      .on('finish', () => {
-        // make the image public to the web
-        // (since we want people to be able to download it)
-        file.makePublic().then(() => {
-          console.log(`success! image uploaded to\n ${publicUrl}`)
-        })
-      })
-  }
+    })
+  // }
 }
 
 module.exports = cache
