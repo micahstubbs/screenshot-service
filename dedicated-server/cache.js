@@ -18,7 +18,7 @@ const cache = async props => {
   let readStream
   if (buffer) {
     console.log('buffer.length', buffer.length)
-    const readStreamSource = new stream.passThrough()
+    const readStreamSource = new stream.PassThrough()
     readStream = readStreamSource.end(buffer)
   } else if (path) {
     console.log('path.length', path.length)
