@@ -19,7 +19,7 @@ const cache = async props => {
   else if (buffer) readStreamSource = buffer
   else console.log(`error: no file path or buffer provided`)
 
-  if (readStreamSouce) {
+  if (readStreamSource) {
     fs.createReadStream(readStreamSource)
       .pipe(file.createWriteStream())
       .on('error', err => {
