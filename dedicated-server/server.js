@@ -82,7 +82,7 @@ app.get('/', async (req, res) => {
 
         const size = buffer.length
         res.setHeader('Content-Length', size)
-        res.write(file, 'binary')
+        res.write(buffer, 'binary')
         res.end()
       }
     } else {
