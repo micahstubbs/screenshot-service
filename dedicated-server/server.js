@@ -78,7 +78,7 @@ app.get('/', async (req, res) => {
         let buffer = await screenshot({ url, filename, ext, pageRanges })
 
         // cache the screenshot file
-        cache({ buffer, filename })
+        // cache({ buffer, filename })
 
         const size = buffer.length
         res.setHeader('Content-Length', size)
