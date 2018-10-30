@@ -17,25 +17,26 @@ module.exports = async ({
   if (!/http?s:\/\//.test(url)) url = `http://${url}`
   console.log('url after checking protocol', url)
 
-  const pathDir = `${__dirname}/screenshots`
-  const path = `${pathDir}/${filename}`
   let fullPage = true
 
+  // const pathDir = `${__dirname}/screenshots`
+  // const path = `${pathDir}/${filename}`
+
   // if the path does not exist, create it
-  const access = util.promisify(fs.access)
-  const mkdir = util.promisify(fs.mkdir)
-  try {
-    let pathExists = await access(pathDir)
-  } catch (err) {
-    console.log(`${pathDir} does not exist yet`)
-    try {
-      await mkdir(pathDir)
-      console.log(`created ${pathDir}`)
-    } catch (err) {
-      console.log(`error creating ${pathDir}`)
-      console.log(err)
-    }
-  }
+  // const access = util.promisify(fs.access)
+  // const mkdir = util.promisify(fs.mkdir)
+  // try {
+  //   let pathExists = await access(pathDir)
+  // } catch (err) {
+  //   console.log(`${pathDir} does not exist yet`)
+  //   try {
+  //     await mkdir(pathDir)
+  //     console.log(`created ${pathDir}`)
+  //   } catch (err) {
+  //     console.log(`error creating ${pathDir}`)
+  //     console.log(err)
+  //   }
+  // }
 
   // launch the headless browser
   const browser = await puppeteer.launch({
@@ -67,6 +68,7 @@ module.exports = async ({
     buffer = await page.pdf({ format: 'letter', landscape: true, pageRanges })
   }
 
+  await page.close()
   await browser.close()
 
   return buffer
