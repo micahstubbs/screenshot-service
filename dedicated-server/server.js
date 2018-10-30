@@ -150,7 +150,6 @@ app.post('/', async (req, res) => {
     }
   })
 
-  res
-    .sendStatus(201)
-    .send('batch file received, checking cache and taking screenshots now')
+  res.sendStatus(201)
+  // .send('batch file received, checking cache and taking screenshots now')
 })
