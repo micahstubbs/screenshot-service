@@ -15,7 +15,7 @@ const app = express()
 const port = 8890
 
 app.use(bodyParser.urlencoded({ extended: false, limit: '12mb' }))
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: '12mb' }))
 
 app.listen(port, () => {
   console.log(`screenshot-bot listening on port ${port}`)
