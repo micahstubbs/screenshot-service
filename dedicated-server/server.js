@@ -134,7 +134,7 @@ app.post('/', async (req, res) => {
   const queue = async.queue(screenshotAndCache, 10)
 
   // define what happens when the queue is drained, or empty
-  queue.drain()  = () => {
+  queue.drain = () => {
     console.log(`${data.length} pages screen-shotted and cached`)
   }
 
