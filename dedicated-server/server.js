@@ -115,11 +115,11 @@ app.get('/', async (req, res) => {
         res.end()
       }
     } else {
-      res.status(401).send('uh oh, this request is missing an api key')
+      res.sendStatus(401).send('uh oh, this request is missing an api key')
       res.end()
     }
   } else {
-    res.status(400).send('oh no , this request is missing an query string')
+    res.sendStatus(400).send('oh no , this request is missing an query string')
     res.end()
   }
 })
@@ -127,5 +127,5 @@ app.get('/', async (req, res) => {
 app.post('/', (req, res) => {
   const data = req.body.data
   console.log('data', JSON.stringify(data, null, 2))
-  res.send(201)
+  res.sendStatus(201)
 })
