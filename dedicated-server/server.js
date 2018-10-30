@@ -127,4 +127,5 @@ app.get('/', async (req, res) => {
 app.post('/batch', (req, res) => {
   const data = req.body.data
   console.log('data', JSON.stringify(data, null, 2))
+  res.send(201)
 })
