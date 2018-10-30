@@ -129,6 +129,8 @@ app.post('/', async (req, res) => {
   console.log('req.body', JSON.stringify(req.body, null, 2))
   data.forEach(async d => {
     const filename = `${d.filename}.${d.ext}`
+    const { url, ext, pageRanges, viewport, resize } = d
+
     const screenshotInCache = await checkCache(filename)
     if (screenshotInCache) {
       console.log(`found in cache ${filename}`)
