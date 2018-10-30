@@ -125,6 +125,10 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/', async (req, res) => {
+  res
+    .sendStatus(201)
+    .send('batch file received, checking cache and taking screenshots now')
+
   const data = req.body.data
   console.log('req.body', JSON.stringify(req.body, null, 2))
   data.forEach(async d => {
@@ -149,7 +153,4 @@ app.post('/', async (req, res) => {
       cache({ buffer, filename })
     }
   })
-
-  res.sendStatus(201)
-  // .send('batch file received, checking cache and taking screenshots now')
 })
