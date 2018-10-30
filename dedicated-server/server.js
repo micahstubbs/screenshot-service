@@ -125,6 +125,7 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/', (req, res) => {
+  console.log('req', JSON.stringify(data, null, 2))
   const data = req.body.data
   console.log('data', JSON.stringify(data, null, 2))
   res.sendStatus(201)
