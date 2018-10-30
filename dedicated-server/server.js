@@ -124,11 +124,31 @@ app.get('/', async (req, res) => {
   }
 })
 
-app.post('/', (req, res) => {
+app.post('/', async (req, res) => {
   const data = req.body.data
-
   console.log('req.body', JSON.stringify(req.body, null, 2))
-  console.log('data', JSON.stringify(data, null, 2))
+  data.forEach(async d => {
+    const filename = `${d.filename}.${d.ext}`
+    const screenshotInCache = await checkCache(filename)
+    if (screenshotInCache) {
+      console.log(`found in cache ${filename}`)
+    } else {
+      // render screenshot
+      let buffer = await screenshot({
+        url,
+        filename,
+        ext,
+        pageRanges,
+        viewport,
+        resize
+      })
 
-  res.sendStatus(201)
+      // cache the screenshot file
+      cache({ buffer, filename })
+    }
+  })
+
+  res
+    .sendStatus(201)
+    .send('batch file received, checking cache and taking screenshots now')
 })
