@@ -2,6 +2,8 @@ const util = require('util')
 const fs = require('fs')
 const express = require('express')
 const bodyParser = require('body-parser')
+const async = require('async')
+
 const screenshot = require('./screenshot.js')
 const cache = require('./cache.js')
 const checkCache = require('./util/check-cache.js')
@@ -127,26 +129,38 @@ app.get('/', async (req, res) => {
 app.post('/', async (req, res) => {
   const data = req.body.data
   console.log('data.length', data.length)
-  data.forEach(async d => {
-    const filename = `${d.filename}.${d.ext}`
-    const { url, ext, pageRanges, viewport, resize } = d
 
-    const screenshotInCache = await checkCache(filename)
-    if (screenshotInCache) {
-      console.log(`found in cache ${filename}`)
-    } else {
-      // render screenshot
-      let buffer = await screenshot({
-        url,
-        filename,
-        ext,
-        pageRanges,
-        viewport,
-        resize
-      })
+  // 10 simultaneous screenshotAndCache operations
+  const queue = async.queue(screenshotAndCache, 10)
 
-      // cache the screenshot file
-      cache({ buffer, filename })
-    }
-  })
+  // define what happens when the queue is drained, or empty
+  queue.drain()  = () => {
+    console.log(`${data.length} pages screen-shotted and cached`)
+  }
+
+  // queue pages for processing
+  queue.push(data)
 })
+
+async function screenshotAndCache(props) {
+  const filename = `${props.filename}.${props.ext}`
+  const { url, ext, pageRanges, viewport, resize } = props
+
+  const screenshotInCache = await checkCache(filename)
+  if (screenshotInCache) {
+    console.log(`found in cache ${filename}`)
+  } else {
+    // render screenshot
+    let buffer = await screenshot({
+      url,
+      filename,
+      ext,
+      pageRanges,
+      viewport,
+      resize
+    })
+
+    // cache the screenshot file
+    cache({ buffer, filename })
+  }
+}

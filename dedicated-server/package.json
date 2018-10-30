@@ -6,6 +6,7 @@
   "main": "index.js",
   "dependencies": {
     "@google-cloud/storage": "^2.1.0",
+    "async": "^2.6.1",
     "express": "^4.16.4",
     "filenamify": "^2.1.0",
     "puppeteer": "^0.13.0",
