@@ -126,7 +126,7 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
   const data = req.body.data
-  console.log('data.length', data.length))
+  console.log('data.length', data.length)
   data.forEach(async d => {
     const filename = `${d.filename}.${d.ext}`
     const { url, ext, pageRanges, viewport, resize } = d
