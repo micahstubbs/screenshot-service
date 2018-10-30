@@ -14,7 +14,7 @@ const keys = require('./keys.js')
 const app = express()
 const port = 8890
 
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false, limit: '12mb' }))
 app.use(bodyParser.json())
 
 app.listen(port, () => {
