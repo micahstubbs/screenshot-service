@@ -1,6 +1,7 @@
 const util = require('util')
 const fs = require('fs')
 const express = require('express')
+const bodyParser = require('body-parser')
 const screenshot = require('./screenshot.js')
 const cache = require('./cache.js')
 const checkCache = require('./util/check-cache.js')
@@ -10,6 +11,9 @@ const keys = require('./keys.js')
 
 const app = express()
 const port = 8890
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
 app.listen(port, () => {
   console.log(`screenshot-bot listening on port ${port}`)
@@ -118,4 +122,9 @@ app.get('/', async (req, res) => {
     res.status(400).send('oh no , this request is missing an query string')
     res.end()
   }
+})
+
+app.post('/batch', (req, res) => {
+  const data = req.body.data
+  console.log('data', JSON.stringify(data, null, 2))
 })
