@@ -6,7 +6,7 @@ const async = require('async')
 
 const screenshot = require('./screenshot.js')
 const cacheToBucket = require('./cache-to-bucket.js')
-const checkCache = require('./util/check-cache.js')
+const checkBucketCache = require('./check-bucket-cache')
 const getFilename = require('./util/get-filename.js')
 const { Storage } = require('@google-cloud/storage')
 const keys = require('./keys.js')
@@ -67,7 +67,7 @@ app.get('/', async (req, res) => {
       res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
 
       // check if url is already in cache
-      const screenshotInCache = await checkCache(filename)
+      const screenshotInCache = await checkBucketCache(filename)
       if (screenshotInCache) {
         // serve screenshot from the gcp bucket cache
         const bucketName = 'blockbuilder-screenshots'
@@ -149,7 +149,7 @@ async function screenshotAndCache(props) {
   // hard code this for now
   const mode = 'path'
 
-  const screenshotInCache = await checkCache(filename)
+  const screenshotInCache = await checkBucketCache(filename)
   if (screenshotInCache) {
     console.log(`found in cache ${filename}`)
   } else {
