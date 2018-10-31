@@ -12,9 +12,13 @@ module.exports = async filename => {
     // Lists files in the bucket
     const results = await storage.bucket(bucketName).getFiles(options)
     const files = results[0]
-    if (files.length > 0) return true
+    if (files.length > 0) {
+      console.log(`found in gcp bucket cache\n ${filename}`)
+      return true
+    }
   } catch (err) {
     console.error('ERROR:', err)
   }
+  console.log(`did not find in gcp bucket cache\n ${filename}`)
   return false
 }
