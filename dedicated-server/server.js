@@ -1,6 +1,9 @@
 const util = require('util')
 const fs = require('fs')
 const express = require('express')
+const bodyParser = require('body-parser')
+const async = require('async')
+
 const screenshot = require('./screenshot.js')
 const cache = require('./cache.js')
 const checkCache = require('./util/check-cache.js')
@@ -10,6 +13,9 @@ const keys = require('./keys.js')
 
 const app = express()
 const port = 8890
+
+app.use(bodyParser.urlencoded({ extended: false, limit: '12mb' }))
+app.use(bodyParser.json({ limit: '12mb' }))
 
 app.listen(port, () => {
   console.log(`screenshot-bot listening on port ${port}`)
@@ -23,9 +29,22 @@ app.get('/', async (req, res) => {
   let ext = 'png' // default to png
   let filename
   let pageRanges = ''
+  let viewport
+  let resize
+  let reply
+
   if (req && req.query) {
     url = req.query.url
     key = req.query.id
+    viewport = {
+      height: Number(req.query.vheight),
+      width: Number(req.query.vwidth)
+    }
+    resize = {
+      height: Number(req.query.rheight),
+      width: Number(req.query.rwidth)
+    }
+    reply = req.query.reply
     if (req.query.ext) ext = req.query.ext
     if (req.query.filename) filename = `${req.query.filename}.${ext}`
     if (req.query.ext === 'pdf' && req.query.pageRanges)
@@ -75,29 +94,73 @@ app.get('/', async (req, res) => {
           .pipe(res)
       } else {
         // render screenshot
-        const { path } = await screenshot({ url, filename, ext, pageRanges })
-        // console.log(JSON.stringify(screenshot, null, 2))
-
-        const readFile = util.promisify(fs.readFile)
-        const file = await readFile(path)
+        let buffer = await screenshot({
+          url,
+          filename,
+          ext,
+          pageRanges,
+          viewport,
+          resize
+        })
 
         // cache the screenshot file
-        cache({ path, filename })
+        cache({ buffer, filename })
 
-        const stat = util.promisify(fs.stat)
-        const { size } = await stat(path)
-
-        // serve the response from the local filesystem
+        const size = buffer.length
         res.setHeader('Content-Length', size)
-        res.write(file, 'binary')
+
+        // this is a hack, should really handle POST requests
+        // for when I want to screenshot and cache
+        // without replying to the client
+        // TODO: properly handle POST requests
+        if (reply !== 'no') res.write(buffer, 'binary')
         res.end()
       }
     } else {
-      res.status(401).send('uh oh, this request is missing an api key')
+      res.sendStatus(401).send('uh oh, this request is missing an api key')
       res.end()
     }
   } else {
-    res.status(400).send('oh no , this request is missing an query string')
+    res.sendStatus(400).send('oh no , this request is missing an query string')
     res.end()
   }
 })
+
+app.post('/', async (req, res) => {
+  const data = req.body.data
+  console.log('data.length', data.length)
+
+  // 8 simultaneous screenshotAndCache operations
+  const queue = async.queue(screenshotAndCache, 8)
+
+  // define what happens when the queue is drained, or empty
+  queue.drain = () => {
+    console.log(`${data.length} pages screen-shotted and cached`)
+  }
+
+  // queue pages for processing
+  queue.push(data)
+})
+
+async function screenshotAndCache(props) {
+  const filename = `${props.filename}.${props.ext}`
+  const { url, ext, pageRanges, viewport, resize } = props
+
+  const screenshotInCache = await checkCache(filename)
+  if (screenshotInCache) {
+    console.log(`found in cache ${filename}`)
+  } else {
+    // render screenshot
+    let buffer = await screenshot({
+      url,
+      filename,
+      ext,
+      pageRanges,
+      viewport,
+      resize
+    })
+
+    // cache the screenshot file
+    cache({ buffer, filename })
+  }
+}
