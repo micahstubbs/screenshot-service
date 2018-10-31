@@ -144,7 +144,10 @@ app.post('/', async (req, res) => {
 
 async function screenshotAndCache(props) {
   const filename = `${props.filename}.${props.ext}`
-  const { url, ext, pageRanges, viewport, resize, mode } = props
+  const { url, ext, pageRanges, viewport, resize } = props
+
+  // hard code this for now
+  const mode = 'path'
 
   const screenshotInCache = await checkCache(filename)
   if (screenshotInCache) {
