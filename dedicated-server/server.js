@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const async = require('async')
 
 const screenshot = require('./screenshot.js')
-const cache = require('./cache.js')
+const cacheToBucket = require('./cache-to-bucket.js')
 const checkCache = require('./util/check-cache.js')
 const getFilename = require('./util/get-filename.js')
 const { Storage } = require('@google-cloud/storage')
@@ -144,23 +144,38 @@ app.post('/', async (req, res) => {
 
 async function screenshotAndCache(props) {
   const filename = `${props.filename}.${props.ext}`
-  const { url, ext, pageRanges, viewport, resize } = props
+  const { url, ext, pageRanges, viewport, resize, mode } = props
 
   const screenshotInCache = await checkCache(filename)
   if (screenshotInCache) {
     console.log(`found in cache ${filename}`)
   } else {
     // render screenshot
-    let buffer = await screenshot({
-      url,
-      filename,
-      ext,
-      pageRanges,
-      viewport,
-      resize
-    })
+    let buffer
+    let path
+    if (mode === 'buffer') {
+      let buffer = await screenshot({
+        url,
+        filename,
+        ext,
+        pageRanges,
+        viewport,
+        resize,
+        mode
+      })
+    } else if (mode === 'path') {
+      let path = await screenshot({
+        url,
+        filename,
+        ext,
+        pageRanges,
+        viewport,
+        resize,
+        mode
+      })
+    }
 
     // cache the screenshot file
-    cache({ buffer, filename })
+    cacheToBucket({ buffer, path, filename })
   }
 }
