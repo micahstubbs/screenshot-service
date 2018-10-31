@@ -13,12 +13,12 @@ module.exports = async filename => {
     const results = await storage.bucket(bucketName).getFiles(options)
     const files = results[0]
     if (files.length > 0) {
-      console.log(`in gcp bucket ${filename}`)
+      console.log(`found in gcp bucket ${filename}`)
       return true
     }
   } catch (err) {
     console.error('ERROR:', err)
   }
-  console.log(`not in gcp bucket ${filename}`)
+  console.log(`not found in gcp bucket ${filename}`)
   return false
 }

@@ -153,7 +153,7 @@ async function screenshotAndCache(props) {
   const screenshotInCache = await checkBucketCache(filename)
   if (screenshotInCache) {
     result = `found in cache ${filename}`
-    console.log(result)
+    // console.log(result)
   } else {
     // render screenshot
     if (mode === 'buffer') {
