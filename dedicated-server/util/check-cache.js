@@ -6,6 +6,7 @@ module.exports = async filename => {
   const options = {
     prefix: filename
   }
+  console.log(`checking gcp bucket cache for ${filename}`)
 
   try {
     // Lists files in the bucket
