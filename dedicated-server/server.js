@@ -180,6 +180,9 @@ async function screenshotAndCache(props) {
         mode
       })
 
+      // weirdly, this is necessary to make the caching happen
+      // something to do with waiting for `path` to be defined
+      // I imagine 🤔
       console.log('path from screenshot in server.js', path)
 
       // cache the screenshot file
