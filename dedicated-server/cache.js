@@ -13,11 +13,11 @@ const cache = async props => {
 
   // the public url can be used
   // to directly access the file via HTTP
-  publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
+  const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
 
   let readStream
   if (buffer) {
-    console.log('buffer.length', buffer.length)
+    console.log(`caching ${buffer.length} bytes from buffer\n ${filename}`)
 
     // use gcloud's file.save API
     // to directly upload a buffer
@@ -26,12 +26,14 @@ const cache = async props => {
       if (err) console.log(err)
       else {
         file.makePublic().then(() => {
-          console.log(`success! image uploaded to\n ${publicUrl}`)
+          console.log(
+            `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
+          )
         })
       }
     })
   } else if (path) {
-    console.log('path.length', path.length)
+    console.log(`caching ${buffer.length} bytes from file\n ${path}`)
     fs.createReadStream(readStreamSource)
       .pipe(file.createWriteStream())
       .on('error', err => {
@@ -41,7 +43,9 @@ const cache = async props => {
         // make the image public to the web
         // (since we want people to be able to download it)
         file.makePublic().then(() => {
-          console.log(`success! image uploaded to\n ${publicUrl}`)
+          console.log(
+            `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
+          )
         })
       })
   } else console.log(`error: no file path or buffer provided`)
