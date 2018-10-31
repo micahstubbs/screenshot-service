@@ -6,6 +6,7 @@ const { Storage } = require('@google-cloud/storage')
 // https://cloud.google.com/nodejs/docs/reference/storage/2.0.x/File.html#createWriteStream
 const cacheToBucket = async props => {
   const { path, buffer, filename } = props
+  let result
 
   const storage = new Storage()
   const bucket = storage.bucket('blockbuilder-screenshots')
@@ -27,10 +28,9 @@ const cacheToBucket = async props => {
       if (err) console.log(err)
       else {
         file.makePublic().then(() => {
+          result = `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
           console.log('')
-          console.log(
-            `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
-          )
+          console.log(result)
           console.log('')
         })
       }
@@ -48,14 +48,19 @@ const cacheToBucket = async props => {
         // make the image public to the web
         // (since we want people to be able to download it)
         file.makePublic().then(() => {
+          result = `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
           console.log('')
-          console.log(
-            `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
-          )
+          console.log(result)
           console.log('')
         })
       })
-  } else console.log(`error: no file path or buffer provided`)
+  } else {
+    result = 'error: no file path or buffer provided'
+    console.log('')
+    console.log(result)
+    console.log('')
+  }
+  return result
 }
 
 module.exports = cacheToBucket
