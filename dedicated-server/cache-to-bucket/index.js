@@ -5,7 +5,7 @@ const { Storage } = require('@google-cloud/storage')
 // based on
 // https://cloud.google.com/nodejs/docs/reference/storage/2.0.x/File.html#createWriteStream
 const cacheToBucket = async props => {
-  const { path, buffer, filename } = props
+  const { path, buffer, filename, mode } = props
   let result
 
   const storage = new Storage()
@@ -16,7 +16,7 @@ const cacheToBucket = async props => {
   // to directly access the file via HTTP
   const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
 
-  if (buffer) {
+  if (mode === 'buffer') {
     console.log('')
     console.log(`caching ${buffer.length} bytes from buffer\n ${filename}`)
     console.log('')
@@ -38,7 +38,7 @@ const cacheToBucket = async props => {
           .catch(err => console.log(err))
       }
     })
-  } else if (path) {
+  } else if (mode === 'path') {
     console.log('')
     console.log(`caching file\n ${path}`)
     console.log('')

@@ -167,7 +167,7 @@ async function screenshotAndCache(props) {
       })
 
       // cache the screenshot file
-      result = await cacheToBucket({ buffer, filename })
+      result = await cacheToBucket({ buffer, filename, mode })
     } else if (mode === 'path') {
       const path = await screenshot({
         url,
@@ -180,7 +180,7 @@ async function screenshotAndCache(props) {
       })
 
       // cache the screenshot file
-      result = await cacheToBucket({ path, filename })
+      result = await cacheToBucket({ path, filename, mode })
     }
   }
   return result
