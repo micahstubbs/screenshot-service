@@ -11,8 +11,6 @@ const test = async () => {
     outPath
   })
   console.log(JSON.stringify(result, null, 2))
-  // if (result.err) console.log(result.err)
-  // else console.log(JSON.stringify(result.info, null, 2))
 }
 
 test()
