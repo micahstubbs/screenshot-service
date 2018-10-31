@@ -128,7 +128,7 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
   const data = req.body.data
-  console.log('data.length', data.length)
+  console.log(`recieved POST with ${data.length} pages to screenshot`)
 
   // 8 simultaneous screenshotAndCache operations
   const queue = async.queue(screenshotAndCache, 8)
