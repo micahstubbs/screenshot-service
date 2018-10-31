@@ -15,7 +15,7 @@ module.exports = async ({
 
   // if url does not have http?s://, prepend it
   if (!/http?s:\/\//.test(url)) url = `http://${url}`
-  console.log('url after checking protocol', url)
+  // console.log('url after checking protocol', url)
 
   let fullPage = true
 
