@@ -70,7 +70,7 @@ module.exports = async ({
     //
 
     const pathDir = `${__dirname}/screenshots`
-    const path = `${pathDir}/${filename}`
+    let path = `${pathDir}/${filename}`
 
     // if the path does not exist, create it
     const access = util.promisify(fs.access)
