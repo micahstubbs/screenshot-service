@@ -145,8 +145,6 @@ app.post('/', async (req, res) => {
 async function screenshotAndCache(props) {
   const filename = `${props.filename}.${props.ext}`
   const { url, ext, pageRanges, viewport, resize, mode } = props
-  let buffer
-  let path
 
   const screenshotInCache = await checkCache(filename)
   if (screenshotInCache) {
@@ -154,7 +152,7 @@ async function screenshotAndCache(props) {
   } else {
     // render screenshot
     if (mode === 'buffer') {
-      buffer = await screenshot({
+      const buffer = await screenshot({
         url,
         filename,
         ext,
@@ -163,19 +161,22 @@ async function screenshotAndCache(props) {
         resize,
         mode
       })
-    } else if (mode === 'path') {
-      path = await screenshot({
-        url,
-        filename,
-        ext,
-        pageRanges,
-        viewport,
-        resize,
-        mode
-      })
-    }
 
-    // cache the screenshot file
-    cacheToBucket({ buffer, path, filename })
+      // cache the screenshot file
+      cacheToBucket({ buffer, filename })
+    } else if (mode === 'path') {
+      const path = await screenshot({
+        url,
+        filename,
+        ext,
+        pageRanges,
+        viewport,
+        resize,
+        mode
+      })
+
+      // cache the screenshot file
+      cacheToBucket({ path, filename })
+    }
   }
 }
