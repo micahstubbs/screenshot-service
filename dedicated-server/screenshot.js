@@ -91,14 +91,17 @@ module.exports = async ({
     // screenshot the page
     if (ext === 'png') {
       let previewPath = path.replace('thumbnail.png', 'preview.png')
+      console.log('previewPath', previewPath)
       previewPath = await page.screenshot({ path: previewPath, fullPage })
       if (resize && resize.width && resize.height) {
         const { width, height } = resize
+        const input = previewPath
+        const outPath = path
         const result = await resizeImage({
-          input: previewPath,
+          input,
           width,
           height,
-          outPath: path
+          outPath
         })
         // idea here is the make the result
         // of the resize call blocking
