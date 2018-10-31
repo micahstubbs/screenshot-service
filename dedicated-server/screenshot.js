@@ -2,6 +2,7 @@ const util = require('util')
 const fs = require('fs')
 const puppeteer = require('puppeteer')
 const sharp = require('sharp')
+const resizeImage = require('./resize-image/')
 
 module.exports = async ({
   url,
@@ -68,8 +69,8 @@ module.exports = async ({
     // return a string path to that file
     //
 
-    pathDir = `${__dirname}/screenshots`
-    path = `${pathDir}/${filename}`
+    const pathDir = `${__dirname}/screenshots`
+    const path = `${pathDir}/${filename}`
 
     // if the path does not exist, create it
     const access = util.promisify(fs.access)
@@ -88,16 +89,28 @@ module.exports = async ({
     }
 
     // screenshot the page
-    let path
     if (ext === 'png') {
-      path = await page.screenshot({ path, fullPage })
+      let previewPath = path.replace('thumbnail.png', 'preview.png')
+      previewPath = await page.screenshot({ path: previewPath, fullPage })
       if (resize && resize.width && resize.height) {
-        buffer = sharp(buffer)
-          .resize(resize.width, resize.height)
-          .toBuffer()
+        const { width, height } = resize
+        const result = await resizeImage({
+          input: previewPath,
+          width,
+          height,
+          outPath: path
+        })
+        // idea here is the make the result
+        // of the resize call blocking
+        // so that we don't return the path until
+        // the resize is complete
+        // TODO: find a better way to to this
+        if (result) {
+          console.log(`resized screenshot to ${width} x ${height} for\n ${url}`)
+          path = path
+        }
       }
-    }
-    if (ext === 'pdf') {
+    } else if (ext === 'pdf') {
       const format = 'letter'
       const landscape = true
       path = await page.pdf({ path, format, landscape, pageRanges })
