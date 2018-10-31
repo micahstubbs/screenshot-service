@@ -130,8 +130,19 @@ app.post('/', async (req, res) => {
   const data = req.body.data
   console.log('data.length', data.length)
 
+  //
+  // use a queue for caching too
+  //
+  // 1 simultaneous cache operations
+  const cacheQueue = async.queue(cache, 1)
+
+  // define what happens when the queue is drained, or empty
+  cacheQueue.drain = () => {
+    console.log(`cache queue drained`)
+  }
+
   // 10 simultaneous screenshotAndCache operations
-  const queue = async.queue(screenshotAndCache, 10)
+  const queue = async.queue(screenshotAndCache.bind(this, cacheQueue), 10)
 
   // define what happens when the queue is drained, or empty
   queue.drain = () => {
@@ -142,7 +153,7 @@ app.post('/', async (req, res) => {
   queue.push(data)
 })
 
-async function screenshotAndCache(props) {
+async function screenshotAndCache(cacheQueue, props) {
   const filename = `${props.filename}.${props.ext}`
   const { url, ext, pageRanges, viewport, resize } = props
 
@@ -161,6 +172,6 @@ async function screenshotAndCache(props) {
     })
 
     // cache the screenshot file
-    cache({ buffer, filename })
+    cacheQueue.push({ buffer, filename })
   }
 }
