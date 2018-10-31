@@ -63,7 +63,7 @@ const cacheToBucket = async props => {
           .catch(err => console.log(err))
       })
   } else {
-    result = 'error: no mode specified (path|buffer)'
+    result = `error: no mode specified, valid modes are 'path', 'buffer'`
     console.log('')
     console.log(result)
     console.log('')
