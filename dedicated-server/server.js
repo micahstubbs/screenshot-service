@@ -175,6 +175,6 @@ async function screenshotAndCache(cacheQueue, props) {
     cacheQueue.push({ buffer, filename }, err => {
       if (err) console.log(err)
       else console.log(`finished caching ${filename}`)
-    }}
+    })
   }
 }
