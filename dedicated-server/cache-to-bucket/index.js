@@ -6,7 +6,7 @@ const { Storage } = require('@google-cloud/storage')
 // https://cloud.google.com/nodejs/docs/reference/storage/2.0.x/File.html#createWriteStream
 const cacheToBucket = async props => {
   const { path, buffer, filename, mode } = props
-  console.log('filename from cacheToBucket', filename)
+  // console.log('filename from cacheToBucket', filename)
   // console.log('path from cacheToBucket', path)
   let result
 
