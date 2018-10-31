@@ -180,6 +180,8 @@ async function screenshotAndCache(props) {
         mode
       })
 
+      console.log('path from screenshot in server.js', path)
+
       // cache the screenshot file
       result = await cacheToBucket({ path, filename, mode })
     }
