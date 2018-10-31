@@ -27,12 +27,15 @@ const cacheToBucket = async props => {
     file.save(buffer, function(err) {
       if (err) console.log(err)
       else {
-        file.makePublic().then(() => {
-          result = `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
-          console.log('')
-          console.log(result)
-          console.log('')
-        })
+        file
+          .makePublic()
+          .then(() => {
+            result = `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
+            console.log('')
+            console.log(result)
+            console.log('')
+          })
+          .catch(err => console.log(err))
       }
     })
   } else if (path) {
@@ -47,12 +50,15 @@ const cacheToBucket = async props => {
       .on('finish', () => {
         // make the image public to the web
         // (since we want people to be able to download it)
-        file.makePublic().then(() => {
-          result = `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
-          console.log('')
-          console.log(result)
-          console.log('')
-        })
+        file
+          .makePublic()
+          .then(() => {
+            result = `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
+            console.log('')
+            console.log(result)
+            console.log('')
+          })
+          .catch(err => console.log(err))
       })
   } else {
     result = 'error: no file path or buffer provided'
