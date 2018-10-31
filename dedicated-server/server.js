@@ -5,7 +5,7 @@ const bodyParser = require('body-parser')
 const async = require('async')
 
 const screenshot = require('./screenshot.js')
-const cacheToBucket = require('./cache-to-bucket.js')
+const cacheToBucket = require('./cache-to-bucket')
 const checkBucketCache = require('./check-bucket-cache')
 const getFilename = require('./util/get-filename.js')
 const { Storage } = require('@google-cloud/storage')

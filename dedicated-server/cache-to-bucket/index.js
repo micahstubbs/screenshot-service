@@ -15,7 +15,6 @@ const cacheToBucket = async props => {
   // to directly access the file via HTTP
   const publicUrl = `https://storage.googleapis.com/${bucket.name}/${filename}`
 
-  let readStream
   if (buffer) {
     console.log('')
     console.log(`caching ${buffer.length} bytes from buffer\n ${filename}`)
@@ -38,9 +37,9 @@ const cacheToBucket = async props => {
     })
   } else if (path) {
     console.log('')
-    console.log(`caching ${buffer.length} bytes from file\n ${path}`)
+    console.log(`caching file\n ${path}`)
     console.log('')
-    fs.createReadStream(readStreamSource)
+    fs.createReadStream(path)
       .pipe(file.createWriteStream())
       .on('error', err => {
         console.log(err)
