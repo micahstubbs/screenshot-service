@@ -100,7 +100,7 @@ module.exports = async ({
     if (ext === 'pdf') {
       const format = 'letter'
       const landscape = true
-      buffer = await page.pdf({ path, format, landscape, pageRanges })
+      path = await page.pdf({ path, format, landscape, pageRanges })
     }
 
     await page.close()
