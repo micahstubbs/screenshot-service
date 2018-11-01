@@ -67,8 +67,8 @@ app.get('/', async (req, res) => {
       res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
 
       // check if url is already in cache
-      const screenshotInCache = await checkBucketCache(filename)
-      if (screenshotInCache) {
+      const screenshotInBucketCache = await checkBucketCache(filename)
+      if (screenshotInBucketCache) {
         // serve screenshot from the gcp bucket cache
         const bucketName = 'blockbuilder-screenshots'
         const storage = new Storage()
@@ -150,8 +150,8 @@ async function screenshotAndCache(props) {
   // hard code this for now
   const mode = 'path'
 
-  const screenshotInCache = await checkBucketCache(filename)
-  if (screenshotInCache) {
+  const screenshotInBucketCache = await checkBucketCache(filename)
+  if (screenshotInBucketCache) {
     result = `found in cache ${filename}`
     // console.log(result)
   } else {
