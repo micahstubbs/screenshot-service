@@ -150,11 +150,22 @@ async function screenshotAndCache(props) {
   // hard code this for now
   const mode = 'path'
 
-  const screenshotInBucketCache = await checkBucketCache(filename)
-  if (screenshotInBucketCache) {
+  if (await checkBucketCache(filename)) {
     result = `found in cache ${filename}`
     // console.log(result)
+  } else if (await checkLocalCache(filename)) {
+    // file is not in gcp bucket
+    // but _is_ on our server's local filesystem
+
+    // we don't need to screenshot it again
+    // let's just...
+    // upload the file from the local filesystem to the bucket
+    const dir = `${__dirname}/screenshots`
+    const path = `${dir}/${filename}`
+    result = await uploadFileToBucket({ path, filename })
   } else {
+    // file is not in the bucket or on the local filesystem
+    //
     // render screenshot
     if (mode === 'buffer') {
       const buffer = await screenshot({
