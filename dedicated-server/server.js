@@ -7,6 +7,7 @@ const async = require('async')
 const screenshot = require('./screenshot.js')
 const cacheToBucket = require('./cache-to-bucket')
 const checkBucketCache = require('./check-bucket-cache')
+const checkLocalCache = require('./check-local-cache')
 const getFilename = require('./util/get-filename.js')
 const { Storage } = require('@google-cloud/storage')
 const keys = require('./keys.js')
@@ -153,10 +154,15 @@ async function screenshotAndCache(props) {
   // hard code this for now
   const mode = 'path'
 
-  if (!localMode && (await checkBucketCache(filename))) {
+  let inBucketCache
+  if (!localMode) inBucketCache = await checkBucketCache(filename)
+
+  const inLocalCache = await checkLocalCache(filename)
+
+  if (!localMode && inBucketCache) {
     result = `found in cache ${filename}`
     // console.log(result)
-  } else if (await checkLocalCache(filename)) {
+  } else if (inLocalCache) {
     // file is not in gcp bucket
     // but _is_ on our server's local filesystem
 
@@ -167,6 +173,9 @@ async function screenshotAndCache(props) {
       const dir = `${__dirname}/screenshots`
       const path = `${dir}/${filename}`
       result = await uploadFileToBucket({ path, filename })
+    } else {
+      result = `found in local cache ${filename}`
+      console.log(result)
     }
   } else {
     // file is not in the bucket or on the local filesystem
