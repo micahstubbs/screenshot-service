@@ -1,6 +1,7 @@
 const fs = require('fs')
 const stream = require('stream')
 const { Storage } = require('@google-cloud/storage')
+const uploadFileToBucket = require('../upload-file-to-bucket')
 
 // based on
 // https://cloud.google.com/nodejs/docs/reference/storage/2.0.x/File.html#createWriteStream
@@ -41,27 +42,7 @@ const cacheToBucket = async props => {
       }
     })
   } else if (mode === 'path') {
-    console.log('')
-    console.log(`caching file\n ${path}`)
-    console.log('')
-    fs.createReadStream(path)
-      .pipe(file.createWriteStream())
-      .on('error', err => {
-        console.log(err)
-      })
-      .on('finish', () => {
-        // make the image public to the web
-        // (since we want people to be able to download it)
-        file
-          .makePublic()
-          .then(() => {
-            result = `success! uploaded & made public\n ${filename}\n to ${publicUrl}`
-            console.log('')
-            console.log(result)
-            console.log('')
-          })
-          .catch(err => console.log(err))
-      })
+    result = uploadFileToBucket({ path, filename })
   } else {
     result = `error: no mode specified, valid modes are 'path', 'buffer'`
     console.log('')
