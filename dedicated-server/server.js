@@ -136,7 +136,7 @@ app.post('/', async (req, res) => {
 
   // define what happens when the queue is drained, or empty
   queue.drain = () => {
-    console.log(`${data.length} pages screen-shotted and cached`)
+    console.log(`${data.length} pages processed`)
     res.json(201)
   }
 
@@ -159,6 +159,7 @@ async function screenshotAndCache(props) {
   if (!localMode) inBucketCache = await checkBucketCache(filename)
 
   const inLocalCache = await checkLocalCache(filename)
+  console.log(`${inLocalCache} in local cache ${filename}`)
 
   if (!localMode && inBucketCache) {
     result = `found in cache ${filename}`
@@ -176,7 +177,7 @@ async function screenshotAndCache(props) {
       result = await uploadFileToBucket({ path, filename })
     } else {
       result = `found in local cache ${filename}`
-      console.log(result)
+      // console.log(result)
     }
   } else {
     // file is not in the bucket or on the local filesystem
