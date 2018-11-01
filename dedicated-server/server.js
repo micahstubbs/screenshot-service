@@ -145,12 +145,15 @@ app.post('/', async (req, res) => {
 async function screenshotAndCache(props) {
   const filename = `${props.filename}.${props.ext}`
   const { url, ext, pageRanges, viewport, resize } = props
+  // localMode: do not call out to cloud services
+  const localMode = true
+
   let result
 
   // hard code this for now
   const mode = 'path'
 
-  if (await checkBucketCache(filename)) {
+  if (!localMode && (await checkBucketCache(filename))) {
     result = `found in cache ${filename}`
     // console.log(result)
   } else if (await checkLocalCache(filename)) {
@@ -160,9 +163,11 @@ async function screenshotAndCache(props) {
     // we don't need to screenshot it again
     // let's just...
     // upload the file from the local filesystem to the bucket
-    const dir = `${__dirname}/screenshots`
-    const path = `${dir}/${filename}`
-    result = await uploadFileToBucket({ path, filename })
+    if (!localMode) {
+      const dir = `${__dirname}/screenshots`
+      const path = `${dir}/${filename}`
+      result = await uploadFileToBucket({ path, filename })
+    }
   } else {
     // file is not in the bucket or on the local filesystem
     //
@@ -179,7 +184,9 @@ async function screenshotAndCache(props) {
       })
 
       // cache the screenshot file
-      result = await cacheToBucket({ buffer, filename, mode })
+      if (!localMode) {
+        result = await cacheToBucket({ buffer, filename, mode })
+      }
     } else if (mode === 'path') {
       const path = await screenshot({
         url,
@@ -196,8 +203,9 @@ async function screenshotAndCache(props) {
       // I imagine 🤔
       console.log('path from screenshot in server.js', path)
 
-      // cache the screenshot file
-      result = await cacheToBucket({ path, filename, mode })
+      if (!localMode) {
+        result = await cacheToBucket({ path, filename, mode })
+      }
     }
   }
   return result
