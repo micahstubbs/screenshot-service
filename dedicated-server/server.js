@@ -158,7 +158,9 @@ async function screenshotAndCache(props) {
   let inBucketCache
   if (!localMode) inBucketCache = await checkBucketCache(filename)
 
-  const inLocalCache = await checkLocalCache(filename)
+  const dir = `${__dirname}/screenshots`
+  const localPath = `${dir}/${filename}`
+  const inLocalCache = await checkLocalCache({ path: localPath })
   console.log(`${inLocalCache} in local cache ${filename}`)
 
   if (!localMode && inBucketCache) {
@@ -172,7 +174,6 @@ async function screenshotAndCache(props) {
     // let's just...
     // upload the file from the local filesystem to the bucket
     if (!localMode) {
-      const dir = `${__dirname}/screenshots`
       const path = `${dir}/${filename}`
       result = await uploadFileToBucket({ path, filename })
     } else {
