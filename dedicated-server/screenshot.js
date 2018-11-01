@@ -112,6 +112,8 @@ module.exports = async ({
           console.log(`resized screenshot to ${width} x ${height} for\n ${url}`)
           path = path
         }
+      } else {
+        path = previewPath
       }
     } else if (ext === 'pdf') {
       const format = 'letter'
