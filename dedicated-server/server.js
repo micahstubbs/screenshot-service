@@ -105,7 +105,7 @@ app.get('/', async (req, res) => {
         })
 
         // cache the screenshot file
-        cacheToBucket({ buffer, filename })
+        cacheToBucket({ buffer, filename, mode: 'buffer' })
 
         const size = buffer.length
         res.setHeader('Content-Length', size)
