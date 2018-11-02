@@ -101,7 +101,8 @@ app.get('/', async (req, res) => {
           ext,
           pageRanges,
           viewport,
-          resize
+          resize,
+          mode: 'buffer'
         })
 
         // cache the screenshot file
