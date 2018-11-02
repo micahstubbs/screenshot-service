@@ -14,7 +14,7 @@ module.exports = async ({
   mode
 }) => {
   console.log('url from screenshot.js', url)
-
+  let result
   // if url does not have http?s://, prepend it
   if (!/http?s:\/\//.test(url)) url = `http://${url}`
   // console.log('url after checking protocol', url)
@@ -62,7 +62,7 @@ module.exports = async ({
     await page.close()
     await browser.close()
 
-    return buffer
+    result = buffer
   } else if (mode === 'path') {
     //
     // write the screenshot file to the local filesystem
@@ -124,6 +124,8 @@ module.exports = async ({
     await page.close()
     await browser.close()
 
-    return path
+    result = path
   }
+  return result
 }
+
