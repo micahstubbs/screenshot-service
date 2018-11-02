@@ -1,11 +1,9 @@
 const fs = require('fs')
 const { Storage } = require('@google-cloud/storage')
 
-module.exports = async ({ path, filename }) => {
-  let result
-
+module.exports = async ({ path, filename, bucketName, callback }) => {
   const storage = new Storage()
-  const bucket = storage.bucket('blockbuilder-screenshots')
+  const bucket = storage.bucket(bucketName)
   const file = bucket.file(filename)
 
   // the public url can be used
@@ -34,8 +32,10 @@ module.exports = async ({ path, filename }) => {
           console.log('')
           console.log(result)
           console.log('')
+          if (typeof callback === 'function') callback()
         })
-        .catch(err => console.log(err))
+        .catch(err => {
+          console.log(err)
+        })
     })
-  return result
 }

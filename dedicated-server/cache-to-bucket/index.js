@@ -42,7 +42,11 @@ const cacheToBucket = async props => {
       }
     })
   } else if (mode === 'path') {
-    result = uploadFileToBucket({ path, filename })
+    uploadFileToBucket({
+      path,
+      filename,
+      bucketName: 'blockbuilder-screenshots'
+    })
   } else {
     result = `error: no mode specified, valid modes are 'path', 'buffer'`
     console.log('')
