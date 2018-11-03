@@ -5,8 +5,9 @@ const bodyParser = require('body-parser')
 const async = require('async')
 
 const screenshot = require('./screenshot.js')
-const cache = require('./cache.js')
-const checkCache = require('./util/check-cache.js')
+const cacheToBucket = require('./cache-to-bucket')
+const checkBucketCache = require('./check-bucket-cache')
+const checkLocalCache = require('./check-local-cache')
 const getFilename = require('./util/get-filename.js')
 const { Storage } = require('@google-cloud/storage')
 const keys = require('./keys.js')
@@ -67,8 +68,8 @@ app.get('/', async (req, res) => {
       res.setHeader('Content-Disposition', `attachment; filename=${filename}`)
 
       // check if url is already in cache
-      const screenshotInCache = await checkCache(filename)
-      if (screenshotInCache) {
+      const screenshotInBucketCache = await checkBucketCache(filename)
+      if (screenshotInBucketCache) {
         // serve screenshot from the gcp bucket cache
         const bucketName = 'blockbuilder-screenshots'
         const storage = new Storage()
@@ -100,11 +101,12 @@ app.get('/', async (req, res) => {
           ext,
           pageRanges,
           viewport,
-          resize
+          resize,
+          mode: 'buffer'
         })
 
         // cache the screenshot file
-        cache({ buffer, filename })
+        cacheToBucket({ buffer, filename, mode: 'buffer' })
 
         const size = buffer.length
         res.setHeader('Content-Length', size)
@@ -128,14 +130,15 @@ app.get('/', async (req, res) => {
 
 app.post('/', async (req, res) => {
   const data = req.body.data
-  console.log('data.length', data.length)
+  console.log(`received POST with ${data.length} pages to screenshot`)
 
   // 8 simultaneous screenshotAndCache operations
   const queue = async.queue(screenshotAndCache, 8)
 
   // define what happens when the queue is drained, or empty
   queue.drain = () => {
-    console.log(`${data.length} pages screen-shotted and cached`)
+    console.log(`${data.length} pages processed`)
+    res.json(201)
   }
 
   // queue pages for processing
@@ -145,22 +148,78 @@ app.post('/', async (req, res) => {
 async function screenshotAndCache(props) {
   const filename = `${props.filename}.${props.ext}`
   const { url, ext, pageRanges, viewport, resize } = props
+  // localMode: do not call out to cloud services
+  const localMode = true
 
-  const screenshotInCache = await checkCache(filename)
-  if (screenshotInCache) {
-    console.log(`found in cache ${filename}`)
+  let result
+
+  // hard code this for now
+  const mode = 'path'
+
+  let inBucketCache
+  if (!localMode) inBucketCache = await checkBucketCache(filename)
+
+  const dir = `${__dirname}/screenshots`
+  const localPath = `${dir}/${filename}`
+  const inLocalCache = await checkLocalCache({ path: localPath })
+  console.log(`${inLocalCache} in local cache ${filename}`)
+
+  if (!localMode && inBucketCache) {
+    result = `found in cache ${filename}`
+    // console.log(result)
+  } else if (inLocalCache) {
+    // file is not in gcp bucket
+    // but _is_ on our server's local filesystem
+
+    // we don't need to screenshot it again
+    // let's just...
+    // upload the file from the local filesystem to the bucket
+    if (!localMode) {
+      const path = `${dir}/${filename}`
+      result = await uploadFileToBucket({ path, filename })
+    } else {
+      result = `found in local cache ${filename}`
+      // console.log(result)
+    }
   } else {
+    // file is not in the bucket or on the local filesystem
+    //
     // render screenshot
-    let buffer = await screenshot({
-      url,
-      filename,
-      ext,
-      pageRanges,
-      viewport,
-      resize
-    })
+    if (mode === 'buffer') {
+      const buffer = await screenshot({
+        url,
+        filename,
+        ext,
+        pageRanges,
+        viewport,
+        resize,
+        mode
+      })
 
-    // cache the screenshot file
-    cache({ buffer, filename })
+      // cache the screenshot file
+      if (!localMode) {
+        result = await cacheToBucket({ buffer, filename, mode })
+      }
+    } else if (mode === 'path') {
+      const path = await screenshot({
+        url,
+        filename,
+        ext,
+        pageRanges,
+        viewport,
+        resize,
+        mode
+      })
+
+      // weirdly, this is necessary to make the caching happen
+      // something to do with waiting for `path` to be defined
+      // I imagine 🤔
+      console.log('path from screenshot in server.js', path)
+
+      if (!localMode) {
+        result = await cacheToBucket({ path, filename, mode })
+      }
+    }
   }
+  return result
 }
